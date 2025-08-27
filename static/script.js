@@ -1,11 +1,15 @@
 const video = document.getElementById('video');
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
+const snapshotBtn = document.getElementById('snapshotBtn');
+const clearBtn = document.getElementById('clearBtn');
+const darkModeBtn = document.getElementById('darkModeBtn');
 const status = document.getElementById('status');
 const output = document.getElementById('output');
 
 let stream = null;
 let captureInterval = null;
+let darkMode = false;
 
 async function startWebcam() {
     try {
@@ -13,11 +17,11 @@ async function startWebcam() {
         video.srcObject = stream;
         startBtn.disabled = true;
         stopBtn.disabled = false;
-        status.textContent = 'Running... capturing frames';
+        status.textContent = '🟢 Running...';
         startCaptureLoop();
     } catch (err) {
         console.error('Failed to start webcam:', err);
-        status.textContent = 'Error starting webcam: ' + err.message;
+        status.textContent = '❌ Error: ' + err.message;
     }
 }
 
@@ -32,7 +36,7 @@ function stopWebcam() {
     }
     startBtn.disabled = false;
     stopBtn.disabled = true;
-    status.textContent = 'Stopped';
+    status.textContent = '⏹️ Stopped';
 }
 
 function startCaptureLoop() {
@@ -45,7 +49,7 @@ function startCaptureLoop() {
         if (!stream) return;
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        status.textContent = 'Sending frame...';
+        status.textContent = '📤 Sending frame...';
         try {
             const resp = await fetch('/detect', {
                 method: 'POST',
@@ -55,16 +59,42 @@ function startCaptureLoop() {
             const json = await resp.json();
             if (json.image) {
                 output.src = json.image;
-                status.textContent = 'Frame processed';
+                status.textContent = '✅ Frame processed';
             } else if (json.error) {
-                status.textContent = 'Server error: ' + json.error;
+                status.textContent = '⚠️ Server error: ' + json.error;
             }
         } catch (err) {
             console.error('Error sending frame:', err);
-            status.textContent = 'Network error: ' + err.message;
+            status.textContent = '❌ Network error: ' + err.message;
         }
-    }, 500); // send frame every 500ms
+    }, 700); // every 700ms
 }
+
+// 📸 Snapshot
+snapshotBtn.addEventListener('click', () => {
+    if (!output.src) {
+        alert("No detection output yet!");
+        return;
+    }
+    const a = document.createElement('a');
+    a.href = output.src;
+    a.download = 'snapshot.jpg';
+    a.click();
+});
+
+// 🗑️ Clear Output
+clearBtn.addEventListener('click', () => {
+    output.src = '';
+    status.textContent = '🧹 Output cleared';
+});
+
+// 🌙 Dark Mode
+darkModeBtn.addEventListener('click', () => {
+    darkMode = !darkMode;
+    document.body.style.background = darkMode ? "#1f2937" : "#f4f6f9";
+    document.body.style.color = darkMode ? "#f9fafb" : "#333";
+    darkModeBtn.textContent = darkMode ? "☀️ Light Mode" : "🌙 Dark Mode";
+});
 
 startBtn.addEventListener('click', startWebcam);
 stopBtn.addEventListener('click', stopWebcam);
