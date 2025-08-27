@@ -3,29 +3,97 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>YOLO Live Webcam Demo</title>
+  <title>🚀 YOLO Live Object Detection</title>
   <style>
-    body { font-family: Arial, sans-serif; display:flex; gap:20px; padding:20px; }
-    #left { display:flex; flex-direction:column; gap:10px; }
-    video, canvas, img { border:1px solid #ccc; max-width:640px; }
-    #status { font-size:14px; color:#555; }
-    button { padding:8px 12px; font-size:16px; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f9;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #111827;
+      color: #fff;
+    }
+    header h1 { margin: 0; font-size: 28px; }
+    main {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 30px;
+      flex-wrap: wrap;
+    }
+    section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      width: 640px;
+      text-align: center;
+    }
+    video, img {
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      width: 100%;
+      max-width: 640px;
+      height: auto;
+    }
+    button {
+      padding: 10px 16px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    button.start { background: #16a34a; color: #fff; }
+    button.stop { background: #dc2626; color: #fff; }
+    button.snapshot { background: #2563eb; color: #fff; }
+    button.clear { background: #f59e0b; color: #fff; }
+    button.darkmode { background: #6b7280; color: #fff; }
+    #status { margin-top: 8px; font-weight: 500; }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #111827;
+      color: #aaa;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
-  <div id="left">
-    <h2>Local Webcam</h2>
-    <video id="video" autoplay playsinline width="640" height="480"></video>
-    <div>
-      <button id="startBtn">Start</button>
-      <button id="stopBtn" disabled>Stop</button>
-      <span id="status">Idle</span>
-    </div>
-  </div>
-  <div id="right">
-    <h2>Server Detection Output</h2>
-    <img id="output" alt="Detection output will appear here" width="640" height="480" />
-  </div>
+  <header>
+    <h1>🚀 YOLO Live Object Detection 🤖</h1>
+    <p>Real-time object detection using your webcam 📷</p>
+  </header>
+  
+  <main>
+    <section>
+      <h2>📷 Webcam</h2>
+      <video id="video" autoplay playsinline></video>
+      <div>
+        <button id="startBtn" class="start">🟢 Start</button>
+        <button id="stopBtn" class="stop" disabled>🔴 Stop</button>
+        <button id="snapshotBtn" class="snapshot">📸 Snapshot</button>
+        <button id="clearBtn" class="clear">🗑️ Clear Output</button>
+        <button id="darkModeBtn" class="darkmode">🌙 Dark Mode</button>
+      </div>
+      <p id="status">⚪ Idle</p>
+    </section>
+
+    <section>
+      <h2>🤖 Detection Output</h2>
+      <img id="output" alt="Detection output will appear here" />
+    </section>
+  </main>
+
+  <footer>
+    <p>Made with ❤️ using Flask + YOLOv8 + OpenCV | <a href="https://github.com/madhusai-official-09/Yolo_web_app" style="color:#60a5fa;">GitHub Repo</a></p>
+  </footer>
 
   <script src="/static/script.js"></script>
 </body>
